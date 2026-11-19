@@ -8,7 +8,7 @@ import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
 import { SplitText } from "gsap/SplitText";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import type { Wedding } from "@/content/wedding";
-import { Diya, GoldDefs, Kolam, Mandala } from "./Art";
+import { Diya, FeatherFlute, GoldDefs, Kolam, Mandala } from "./Art";
 import Scene, { type SceneState } from "./Scene";
 import Countdown from "./Countdown";
 import Rsvp from "./Rsvp";
@@ -81,7 +81,7 @@ export default function Experience({ w }: { w: Wedding }) {
           });
         });
 
-        gsap.utils.toArray<SVGElement>(".kolam").forEach((k) => {
+        gsap.utils.toArray<SVGElement>(".kolam, .emblem").forEach((k) => {
           gsap.fromTo(
             k.querySelectorAll("path"),
             { drawSVG: "0%" },
@@ -209,6 +209,7 @@ export default function Experience({ w }: { w: Wedding }) {
 
       <section className="invite">
         <div className="invite-inner">
+          <FeatherFlute />
           <p className="te-title" lang="te">
             ఆహ్వానం
           </p>

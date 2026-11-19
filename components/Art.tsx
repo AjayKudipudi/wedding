@@ -140,3 +140,31 @@ export function Kolam() {
     </svg>
   );
 }
+
+// Krishna's emblems in line: a flute, with a peacock feather laid across it.
+export function FeatherFlute() {
+  return (
+    <svg className="emblem" viewBox="0 0 240 130" aria-hidden="true" focusable="false">
+      <g fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        {/* flute, lying at a slant */}
+        <path d="M20 98 L212 52"/>
+        <path d="M22 105 L214 59"/>
+        <path d="M20 98 Q16 102 22 105"/>
+        <path d="M212 52 Q218 55 214 59"/>
+        <path d="M46 92 L48 99 M196 56 L198 63 M184 59 L186 66"/>
+        {/* tassel */}
+        <path d="M36 102 Q32 114 38 124 M36 102 Q40 114 35 126"/>
+        {/* peacock feather: the vane */}
+        <path d="M108 94 C92 66 106 26 148 8 C168 34 158 76 122 94"/>
+        {/* quill */}
+        <path d="M94 126 C102 104 118 66 142 30"/>
+        {/* the eye of the feather */}
+        <path d="M142 30 C128 34 121 48 126 60 C139 60 147 46 142 30Z"/>
+        <path d="M139 37 C132 40 128 48 131 55 C138 54 142 46 139 37Z"/>
+        {/* veins running out from the quill */}
+        <path d="M124 64 C114 62 106 54 104 44 M119 72 C109 72 101 66 98 56 M114 81 C106 83 100 79 97 72"/>
+        <path d="M128 64 C138 68 148 64 154 54 M123 74 C134 80 146 78 152 68 M117 84 C127 90 138 88 143 82"/>
+      </g>
+    </svg>
+  );
+}
