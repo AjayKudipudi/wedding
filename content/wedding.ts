@@ -62,7 +62,11 @@ export const wedding = {
     mapsUrl: "https://www.google.com/maps/search/?api=1&query=Tulasi+Convention+Veeravasaram",
   },
 
-  // SAMPLE — WhatsApp number that receives RSVPs: country code + number, digits only.
+  // Where RSVPs are saved: the web-app URL of the Google Sheet script (see RSVP-SHEET.md).
+  // While this is empty, the form falls back to opening WhatsApp instead.
+  rsvpSheetUrl: "",
+
+  // SAMPLE — WhatsApp number used only as the fallback: country code + number, digits only.
   rsvpWhatsApp: "910000000000",
 };
 

@@ -6,13 +6,14 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
 import { SplitText } from "gsap/SplitText";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import type { Wedding } from "@/content/wedding";
 import { Diya, GoldDefs, Kolam, Mandala } from "./Art";
 import Scene, { type SceneState } from "./Scene";
 import Countdown from "./Countdown";
 import Rsvp from "./Rsvp";
 
-gsap.registerPlugin(useGSAP, ScrollTrigger, DrawSVGPlugin, SplitText);
+gsap.registerPlugin(useGSAP, ScrollTrigger, DrawSVGPlugin, SplitText, ScrollToPlugin);
 
 type Phase = "dark" | "lighting" | "lit";
 
@@ -134,7 +135,23 @@ export default function Experience({ w }: { w: Wedding }) {
       .call(() => setPhase("lit"), [], 4.4);
 
     setPhase("lighting");
-    if (reduce) tl.progress(1);
+    if (reduce) {
+      tl.progress(1);
+      return;
+    }
+    // Five seconds after the last lamp catches, carry the guest on to the invitation —
+    // unless they have already started scrolling, or do so on the way (that cancels it).
+    let touched = false;
+    const mark = () => (touched = true);
+    for (const type of ["wheel", "touchstart", "keydown"]) window.addEventListener(type, mark, { once: true, passive: true });
+    tl.call(
+      () => {
+        if (touched || window.scrollY > 8) return;
+        gsap.to(window, { scrollTo: { y: ".invite", autoKill: true }, duration: 3.6, ease: "power2.inOut" });
+      },
+      [],
+      11.6,
+    );
   };
 
   return (
@@ -284,7 +301,11 @@ export default function Experience({ w }: { w: Wedding }) {
             మీ రాక మాకు ఆనందం
           </p>
           <h2 className="reveal">Tell us you are coming</h2>
-          <p className="section-sub">Your reply opens in WhatsApp, ready to send to the family.</p>
+          <p className="section-sub">
+            {w.rsvpSheetUrl
+              ? `Your reply goes straight to ${w.groom} and ${w.bride}.`
+              : "Your reply opens in WhatsApp, ready to send to the family."}
+          </p>
         </header>
         <Rsvp w={w} guest={guest} />
         <footer className="closing">

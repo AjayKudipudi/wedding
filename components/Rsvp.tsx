@@ -12,6 +12,8 @@ export default function Rsvp({ w, guest }: { w: Wedding; guest: string }) {
   const [count, setCount] = useState(2);
   const [picked, setPicked] = useState<string[]>(w.events.map((e) => e.name));
   const [error, setError] = useState("");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+  const toSheet = Boolean(w.rsvpSheetUrl);
 
   // Guests can arrive any time from two weeks before, up to the wedding day itself.
   const weddingDay = w.muhurtham.slice(0, 10);
@@ -24,8 +26,9 @@ export default function Rsvp({ w, guest }: { w: Wedding; guest: string }) {
   const toggle = (ev: string) =>
     setPicked((p) => (p.includes(ev) ? p.filter((x) => x !== ev) : [...p, ev]));
 
-  const send = (e: React.FormEvent) => {
+  const send = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (status === "sending") return;
     if (!name.trim()) {
       setError("Enter your name so we know who is coming.");
       return;
@@ -43,6 +46,33 @@ export default function Rsvp({ w, guest }: { w: Wedding; guest: string }) {
       return;
     }
     setError("");
+
+    if (toSheet) {
+      // One row in the couple's Google Sheet per reply.
+      setStatus("sending");
+      try {
+        await fetch(w.rsvpSheetUrl, {
+          method: "POST",
+          mode: "no-cors", // the sheet's script cannot answer across sites; a completed request means it arrived
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            name: name.trim(),
+            phone: phone.trim(),
+            coming: coming === "yes" ? "Yes" : "No",
+            guests: coming === "yes" ? count : 0,
+            arriving: coming === "yes" ? arrivalText : "",
+            ceremonies: coming === "yes" ? picked.join(", ") : "",
+            invitedAs: guest,
+          }),
+        });
+        setStatus("sent");
+      } catch {
+        setStatus("idle");
+        setError("Your reply was not saved. Check your connection and send it again.");
+      }
+      return;
+    }
+
     const lines =
       coming === "yes"
         ? [
@@ -61,6 +91,20 @@ export default function Rsvp({ w, guest }: { w: Wedding; guest: string }) {
     const url = `https://wa.me/${w.rsvpWhatsApp}?text=${encodeURIComponent(lines.join("\n"))}`;
     window.open(url, "_blank", "noopener");
   };
+
+  if (status === "sent") {
+    return (
+      <div className="rsvp-form rsvp-thanks" role="status">
+        <p className="rsvp-thanks-title">{coming === "yes" ? "Your reply is saved. We will see you there." : "Your reply is saved. You will be missed."}</p>
+        <p>
+          {w.groom} and {w.bride} can see it now.
+        </p>
+        <button type="button" className="link-quiet" onClick={() => setStatus("idle")}>
+          Change my reply
+        </button>
+      </div>
+    );
+  }
 
   return (
     <form className="rsvp-form" onSubmit={send} noValidate>
@@ -142,8 +186,8 @@ export default function Rsvp({ w, guest }: { w: Wedding; guest: string }) {
       <p className="form-error" role="alert">
         {error}
       </p>
-      <button type="submit" className="send">
-        Send RSVP on WhatsApp
+      <button type="submit" className="send" disabled={status === "sending"}>
+        {toSheet ? (status === "sending" ? "Sending your RSVP" : "Send RSVP") : "Send RSVP on WhatsApp"}
       </button>
     </form>
   );
