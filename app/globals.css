@@ -1,0 +1,804 @@
+:root {
+  --night: #120818;
+  --dusk: #1c0a1a;
+  --wine: #3a0914;
+  --wine-lit: #6a1420;
+  --peacock: #0b3a3c;
+  --ivory: #f3e7cf;
+  --paper: #f6edd9;
+  --gold-1: #a57e28;
+  --gold-2: #d6a943;
+  --gold-3: #f3dfa2;
+  --gold-ink: #7d5a12;
+  --gold-metal: linear-gradient(180deg, #f8e9b8 0%, #e2b94f 42%, #a57e28 100%);
+  --jaali: radial-gradient(circle at 50% 50%, transparent 8px, rgba(214, 169, 67, 0.04) 9px, transparent 10.5px);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  background: var(--night);
+}
+
+html.locked {
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  background: var(--night);
+  color: var(--ivory);
+  font-family: var(--font-text), "Times New Roman", serif;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+h1,
+h2,
+h3,
+p,
+ol,
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+fieldset {
+  border: 0;
+  min-width: 0;
+}
+
+h2 {
+  font-family: var(--font-display), serif;
+  font-weight: 500;
+  font-size: clamp(2.1rem, 7.5vw, 3.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+[lang="te"] {
+  font-family: var(--font-telugu), serif;
+  line-height: 1.5;
+}
+
+:focus-visible {
+  outline: 2px solid var(--gold-3);
+  outline-offset: 4px;
+}
+
+.te-title {
+  font-size: 1.45rem;
+  color: var(--gold-2);
+  margin-bottom: 0.35rem;
+}
+
+/* ───────── Hero: the hall of lamps ───────── */
+
+.hero {
+  position: relative;
+  height: 100svh;
+}
+
+.motion .hero {
+  height: 260svh;
+}
+
+.hero-pin {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  background: linear-gradient(180deg, #0a0412 0%, #150720 38%, #2b0a1d 62%, #3a0914 74%, #14050d 100%);
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+}
+
+.scene canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.scene[data-fallback] {
+  background: radial-gradient(60% 40% at 50% 75%, rgba(255, 190, 90, 0.35), transparent 70%);
+}
+
+.veil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.veil-copy {
+  position: absolute;
+  inset-inline: 1.5rem;
+  text-align: center;
+}
+
+.veil-invocation {
+  top: 7svh;
+  font-size: 1.2rem;
+  color: var(--gold-2);
+  word-spacing: 0.4em;
+}
+
+.veil-greeting {
+  top: 14svh;
+  font-family: var(--font-display), serif;
+  font-style: italic;
+  font-size: clamp(1.8rem, 7.4vw, 2.8rem);
+  line-height: 1.2;
+  color: var(--gold-3);
+  text-wrap: balance;
+}
+
+.veil-dear {
+  display: block;
+}
+
+.veil-hint {
+  bottom: 3svh;
+  font-size: 0.95rem;
+  color: rgba(243, 223, 162, 0.8);
+  text-shadow: 0 1px 12px #0a0412;
+  animation: breathe 2.6s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.light-btn {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  appearance: none;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.light-btn:focus-visible {
+  outline-offset: -8px;
+}
+
+.hero-copy {
+  position: absolute;
+  top: 4.5svh;
+  inset-inline: 1rem;
+  text-align: center;
+  pointer-events: none;
+  text-shadow: 0 2px 24px rgba(10, 4, 18, 0.9);
+}
+
+.gate-te {
+  font-size: clamp(1rem, 4.2vw, 1.3rem);
+  color: var(--gold-3);
+  word-spacing: 0.3em;
+}
+
+.names {
+  margin-top: 0.4svh;
+  font-family: var(--font-display), serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(3.3rem, min(16vw, 11svh), 7.5rem);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  font-kerning: none;
+  text-shadow: none;
+}
+
+.name-line {
+  display: inline-block;
+  overflow: hidden;
+  padding: 0.12em 0.14em 0.2em;
+  margin: -0.1em -0.1em -0.16em;
+  vertical-align: bottom;
+}
+
+.name {
+  display: inline-block;
+}
+
+.name,
+.name .char {
+  background: var(--gold-metal);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 14px rgba(255, 190, 90, 0.35));
+}
+
+.name .char {
+  filter: none;
+}
+
+.amp {
+  display: inline-block;
+  font-size: 0.45em;
+  margin-inline: 0.25em;
+  color: var(--gold-2);
+  vertical-align: 0.35em;
+}
+
+.gate-date {
+  margin-top: 0.6svh;
+  font-size: clamp(1rem, 4.4vw, 1.3rem);
+  line-height: 1.4;
+  color: var(--ivory);
+}
+
+.gate-city {
+  font-size: clamp(0.9rem, 3.8vw, 1.1rem);
+  color: rgba(243, 231, 207, 0.78);
+}
+
+[data-phase="dark"] .names,
+[data-phase="dark"] .hero-fade {
+  visibility: hidden;
+}
+
+.scroll-cue {
+  position: absolute;
+  bottom: 2.4svh;
+  inset-inline: 0;
+  text-align: center;
+  font-size: 0.9rem;
+  width: max-content;
+  margin-inline: auto;
+  padding: 0.35rem 1.1rem;
+  border-radius: 999px;
+  background: rgba(10, 4, 18, 0.62);
+  color: var(--gold-3);
+  pointer-events: none;
+}
+
+.hero-light {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 55%, #fffaf0 0%, #fbf4e3 40%, var(--paper) 100%);
+  opacity: 0;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+/* Flames on the small lamps beside each ceremony. */
+
+.diya {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.diya .brass {
+  transition: filter 1.4s ease;
+}
+
+.diya .flame {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transition: opacity 0.6s ease;
+}
+
+.flame-flicker {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: flicker 1.7s ease-in-out infinite;
+}
+
+@keyframes flicker {
+  0%,
+  100% {
+    transform: scale(1, 1) rotate(-1.5deg);
+  }
+  22% {
+    transform: scale(0.95, 1.07) rotate(2deg);
+  }
+  47% {
+    transform: scale(1.04, 0.95) rotate(-2.5deg);
+  }
+  71% {
+    transform: scale(0.97, 1.04) rotate(1.5deg);
+  }
+}
+
+/* ───────── The invitation, on paper ───────── */
+
+.invite,
+.venue {
+  background: radial-gradient(90% 60% at 50% 0%, #fbf4e3 0%, var(--paper) 60%, #ecdfc2 100%);
+  color: var(--wine);
+  text-align: center;
+  padding: clamp(5rem, 16vw, 9rem) 1.5rem;
+}
+
+.invite,
+.venue {
+  position: relative;
+}
+
+.venue::before,
+.venue::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  height: 20px;
+  background: radial-gradient(circle at 50% 100%, var(--paper) 18px, transparent 19px) 50% 0 / 38px 20px repeat-x;
+}
+
+.venue::before {
+  top: -19px;
+  background-image: radial-gradient(circle at 50% 100%, #f8f0de 18px, transparent 19px);
+}
+
+.venue::after {
+  bottom: -19px;
+  background-image: radial-gradient(circle at 50% 0%, #ecdfc2 18px, transparent 19px);
+  z-index: 1;
+}
+
+.invite::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -19px;
+  height: 20px;
+  background: radial-gradient(circle at 50% 0%, #ecdfc2 18px, transparent 19px) 50% 0 / 38px 20px repeat-x;
+  z-index: 1;
+}
+
+.invite .te-title,
+.venue .te-title {
+  color: var(--gold-ink);
+}
+
+.invite-inner,
+.venue-inner {
+  max-width: 33rem;
+  margin-inline: auto;
+}
+
+.invite-hosts {
+  margin-top: 1.5rem;
+  font-size: 1.15rem;
+  line-height: 1.5;
+}
+
+.invite-and {
+  display: block;
+  font-family: var(--font-display), serif;
+  font-style: italic;
+  font-size: 1.2rem;
+  color: var(--gold-ink);
+}
+
+.invite-text {
+  margin-top: 1.75rem;
+  text-wrap: pretty;
+}
+
+.invite-names {
+  margin-top: 1.25rem;
+  font-family: var(--font-display), serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(2.8rem, 12vw, 4.5rem);
+  line-height: 1.05;
+  color: #5a0f1c;
+}
+
+.invite-names span {
+  display: block;
+  font-size: 0.36em;
+  line-height: 1.6;
+  color: var(--gold-ink);
+}
+
+.kolam {
+  display: block;
+  width: min(100%, 21rem);
+  height: auto;
+  margin: 2.75rem auto 0;
+  color: var(--gold-1);
+  overflow: visible;
+}
+
+/* ───────── Ceremonies: a thread of lamps ───────── */
+
+.ceremonies {
+  background: var(--jaali) 0 0 / 30px 30px, var(--dusk);
+  padding: clamp(5rem, 16vw, 9rem) 1.5rem;
+}
+
+.section-head {
+  max-width: 36rem;
+  margin: 0 auto clamp(2.5rem, 8vw, 4rem);
+  text-align: center;
+}
+
+.section-sub {
+  margin-top: 0.9rem;
+  color: rgba(243, 231, 207, 0.75);
+}
+
+.events {
+  position: relative;
+  max-width: 34rem;
+  margin-inline: auto;
+  padding-left: 4.75rem;
+}
+
+.thread {
+  position: absolute;
+  left: 1.75rem;
+  top: 2.5rem;
+  bottom: 2.5rem;
+  width: 1px;
+  background: rgba(214, 169, 67, 0.22);
+}
+
+.thread-fill {
+  position: absolute;
+  inset: 0 -0.5px;
+  background: linear-gradient(var(--gold-3), var(--gold-2));
+  box-shadow: 0 0 8px rgba(240, 190, 80, 0.7);
+  transform-origin: 50% 0;
+}
+
+.event-list {
+  list-style: none;
+}
+
+.event {
+  position: relative;
+  padding-block: 1.9rem;
+}
+
+.event-lamp {
+  position: absolute;
+  left: -4.75rem;
+  top: 1.2rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  padding: 0.35rem 0.5rem 0.6rem;
+  border-radius: 50%;
+  background: var(--dusk);
+}
+
+.event-body {
+  transition: opacity 0.9s ease;
+}
+
+.event-te {
+  font-size: 1.1rem;
+  color: var(--gold-2);
+}
+
+.event h3 {
+  font-family: var(--font-display), serif;
+  font-weight: 500;
+  font-size: clamp(1.9rem, 7vw, 2.5rem);
+  line-height: 1.1;
+}
+
+.event-when {
+  margin-top: 0.5rem;
+  color: var(--gold-3);
+}
+
+.event-where {
+  color: rgba(243, 231, 207, 0.78);
+}
+
+.event-note {
+  margin-top: 0.6rem;
+  color: rgba(243, 231, 207, 0.78);
+  max-width: 28rem;
+}
+
+.motion .event:not(.is-lit) .event-body {
+  opacity: 0.3;
+}
+
+.motion .event:not(.is-lit) .flame {
+  opacity: 0;
+}
+
+.motion .event:not(.is-lit) .brass {
+  filter: brightness(0.5) saturate(0.6);
+}
+
+/* ───────── Muhurtham ───────── */
+
+.muhurtham {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 6rem 1.5rem;
+  text-align: center;
+  background: radial-gradient(80% 60% at 50% 50%, #12585a 0%, var(--peacock) 55%, #062426 100%);
+}
+
+.mandala {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(135vw, 46rem);
+  height: auto;
+  translate: -50% -50%;
+  opacity: 0.34;
+  overflow: visible;
+}
+
+.muhurtham-copy {
+  position: relative;
+  padding: 3rem 2rem;
+  background: radial-gradient(closest-side, rgba(6, 36, 38, 0.92) 0%, rgba(6, 36, 38, 0.7) 60%, transparent 100%);
+}
+
+.muhurtham-date {
+  margin-top: 0.75rem;
+  color: var(--gold-3);
+}
+
+.countdown {
+  margin-top: 2rem;
+  min-height: 6rem;
+  display: flex;
+  justify-content: center;
+  gap: clamp(1.25rem, 6vw, 3rem);
+}
+
+.countdown-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.countdown-num {
+  font-family: var(--font-display), serif;
+  font-weight: 600;
+  font-size: clamp(3rem, 14vw, 5.5rem);
+  line-height: 1;
+  font-variant-numeric: lining-nums tabular-nums;
+  background: var(--gold-metal);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.countdown-label {
+  font-size: 0.95rem;
+  color: rgba(243, 231, 207, 0.8);
+}
+
+.countdown-done {
+  font-family: var(--font-display), serif;
+  font-style: italic;
+  font-size: 1.6rem;
+  color: var(--gold-3);
+}
+
+/* ───────── Venue ───────── */
+
+.venue h2 {
+  color: #5a0f1c;
+}
+
+.venue-address {
+  margin-top: 1rem;
+  text-wrap: balance;
+}
+
+.venue-actions {
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.link-btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 3rem;
+  padding: 0.5rem 1.4rem;
+  border: 1px solid var(--gold-ink);
+  border-radius: 999px;
+  color: #5a0f1c;
+  text-decoration: none;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.link-btn:hover {
+  background: #5a0f1c;
+  color: var(--gold-3);
+}
+
+.venue :focus-visible {
+  outline-color: #5a0f1c;
+}
+
+/* ───────── RSVP ───────── */
+
+.rsvp {
+  background:
+    var(--jaali) 0 0 / 30px 30px,
+    radial-gradient(110% 50% at 50% 100%, var(--wine-lit) 0%, var(--wine) 45%, #1d050d 100%);
+  padding: clamp(5rem, 16vw, 9rem) 1.5rem 3rem;
+}
+
+.rsvp-form {
+  max-width: 28rem;
+  margin-inline: auto;
+  display: grid;
+  gap: 1.75rem;
+}
+
+.field {
+  display: block;
+}
+
+.field-label {
+  display: block;
+  margin-bottom: 0.6rem;
+  color: var(--gold-3);
+}
+
+.field input[type="text"] {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.4rem 0;
+  border: 0;
+  border-bottom: 1px solid rgba(214, 169, 67, 0.6);
+  border-radius: 0;
+  background: transparent;
+  color: var(--ivory);
+  font: inherit;
+  font-size: 1.2rem;
+}
+
+.field input[type="text"]:focus-visible {
+  outline: none;
+  border-bottom: 2px solid var(--gold-3);
+}
+
+.choice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.choice legend {
+  float: left;
+  width: 100%;
+}
+
+.pill {
+  position: relative;
+  display: inline-flex;
+}
+
+.pill input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.pill span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.3rem 1.1rem;
+  border: 1px solid rgba(214, 169, 67, 0.5);
+  border-radius: 999px;
+  color: var(--ivory);
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.pill input:checked + span {
+  background: var(--gold-metal);
+  border-color: transparent;
+  color: #3a0914;
+}
+
+.pill input:focus-visible + span {
+  outline: 2px solid var(--gold-3);
+  outline-offset: 3px;
+}
+
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.stepper button {
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid rgba(214, 169, 67, 0.5);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--gold-3);
+  font: inherit;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.stepper output {
+  min-width: 2ch;
+  text-align: center;
+  font-family: var(--font-display), serif;
+  font-size: 2rem;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.form-error {
+  min-height: 1.7em;
+  margin-block: -0.75rem;
+  color: #ffb4a8;
+}
+
+.send {
+  min-height: 3.4rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--gold-metal);
+  color: #3a0914;
+  font: inherit;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 0 24px rgba(240, 190, 80, 0.35);
+  transition: box-shadow 0.25s ease, transform 0.15s ease;
+}
+
+.send:hover {
+  box-shadow: 0 0 38px rgba(240, 190, 80, 0.6);
+}
+
+.send:active {
+  transform: scale(0.98);
+}
+
+.closing {
+  margin-top: clamp(4rem, 14vw, 7rem);
+  text-align: center;
+  font-family: var(--font-display), serif;
+  font-style: italic;
+  font-size: 1.5rem;
+  color: var(--gold-3);
+}
+
+.closing-diya {
+  width: 4.5rem;
+  margin: 0 auto 0.75rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flame-flicker,
+  .veil-hint {
+    animation: none;
+  }
+}
