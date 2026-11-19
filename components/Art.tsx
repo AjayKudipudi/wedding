@@ -1,3 +1,5 @@
+import { Fragment } from "react";
+
 // Hand-drawn SVG artwork: the lamp, the gateway arch, the mandala and the kolam.
 
 export function GoldDefs() {
@@ -79,24 +81,38 @@ function petal(r1: number, r2: number, w: number) {
   return `M0 ${-r1} C${w} ${-a} ${w} ${-b} 0 ${-r2} C${-w} ${-b} ${-w} ${-a} 0 ${-r1}Z`;
 }
 
+// Four concentric rings, each its own layer so they can turn against one another.
 export function Mandala() {
   const ring = (n: number, r1: number, r2: number, w: number, offset = 0) =>
     Array.from({ length: n }, (_, i) => (
       <path key={`${r1}-${i}`} d={petal(r1, r2, w)} transform={`rotate(${(360 / n) * i + offset})`} />
     ));
+  const layers = [
+    <Fragment key="heart">
+      <circle r="22" />
+      {ring(8, 22, 74, 16)}
+      <circle r="78" />
+    </Fragment>,
+    <Fragment key="petals">
+      {ring(16, 78, 128, 13, 11.25)}
+      <circle r="132" />
+    </Fragment>,
+    <Fragment key="fringe">
+      {ring(32, 132, 160, 7)}
+      <circle r="166" />
+    </Fragment>,
+    <circle key="beads" r="186" strokeDasharray="1 10" strokeWidth="2.4" />,
+  ];
   return (
-    <svg className="mandala" viewBox="-200 -200 400 400" fill="none" aria-hidden="true" focusable="false">
-      <g stroke="url(#gold)" strokeWidth="1.2" strokeLinecap="round">
-        <circle r="22" />
-        {ring(8, 22, 74, 16)}
-        <circle r="78" />
-        {ring(16, 78, 128, 13, 11.25)}
-        <circle r="132" />
-        {ring(32, 132, 160, 7)}
-        <circle r="166" />
-        <circle r="186" strokeDasharray="1 10" strokeWidth="2.4" />
-      </g>
-    </svg>
+    <div className="mandala" aria-hidden="true">
+      {layers.map((layer, i) => (
+        <svg key={i} className={`mandala-ring mandala-ring-${i + 1}`} viewBox="-200 -200 400 400" fill="none" focusable="false">
+          <g stroke="url(#gold)" strokeWidth="1.2" strokeLinecap="round">
+            {layer}
+          </g>
+        </svg>
+      ))}
+    </div>
   );
 }
 

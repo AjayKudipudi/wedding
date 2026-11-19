@@ -571,7 +571,7 @@ export default function Scene({ state }: { state: React.RefObject<SceneState> })
       2,
     );
 
-    // Stone lamps, carved from the temple's own sandstone: a hollow bowl with a pinched spout, oil inside, a wick at the lip.
+    // Terracotta lamps: a hollow bowl with a pinched spout, oil inside, a wick at the lip.
     const profile = [
       [0, 0], [0.09, 0], [0.15, 0.035], [0.2, 0.09], [0.215, 0.135], [0.205, 0.152], [0.188, 0.14], [0.172, 0.112], [0, 0.112],
     ].map(([x, y]) => new THREE.Vector2(x, y));
@@ -626,29 +626,57 @@ export default function Scene({ state }: { state: React.RefObject<SceneState> })
               vec3 n = normalize(vN);
               float oil = step(0.9, vV);
               float inner = step(0.64, vV) * (1.0 - oil);
+              float outer = 1.0 - inner - oil;
+              float toSpout = length(vL.xz - vWick.xz);
 
-              // the same pink sandstone as the temple, with the same uneven grain
+              // ── What the lamp is made of ──
+              // Fired terracotta: brown-red, uneven from the kiln, with a paler worn rim
+              // and soot where the wick has burnt against the lip.
               float grain = noise(vec2(atan(vL.x, vL.z) * 3.0 + vSeed * 40.0, vL.y * 60.0)) * 0.6 + noise(vL.xz * 70.0 + vSeed * 9.0) * 0.4;
-              vec3 clay = mix(vec3(0.62, 0.47, 0.47), vec3(0.88, 0.71, 0.66), grain);
-              clay *= 1.0 - inner * 0.25;
-              vec3 oilCol = vec3(0.3, 0.2, 0.14);
-              vec3 albedo = mix(clay, oilCol, oil);
+              vec3 clay = mix(vec3(0.43, 0.22, 0.14), vec3(0.6, 0.35, 0.23), grain);
+              clay += vec3(0.07, 0.055, 0.04) * smoothstep(0.132, 0.152, vL.y);
+              float soot = smoothstep(0.17, 0.03, toSpout) * smoothstep(0.07, 0.14, vL.y);
+              clay = mix(clay, vec3(0.1, 0.07, 0.06), soot * 0.65);
+              vec3 albedo = mix(clay, vec3(0.1, 0.055, 0.02), oil);
+              // the cotton wick lying in the spout
+              float wick = smoothstep(0.034, 0.02, toSpout) * step(0.1, vL.y);
+              albedo = mix(albedo, vec3(0.72, 0.67, 0.57), wick);
 
-              // night light: soft sky from above, the moon from the right
+              // ── Where light cannot reach ──
+              // the base darkens toward the water; the inside darkens toward the oil
+              float ao = mix(0.42 + 0.58 * smoothstep(0.0, 0.11, vL.y), 0.38 + 0.62 * smoothstep(0.112, 0.152, vL.y), inner);
+              ao = mix(ao, 0.6 - 0.25 * smoothstep(0.08, 0.17, length(vL.xz)), oil);
+
+              // ── By night ──
+              // Dim blue light from the whole sky, a little bounced off the water, and the moon.
+              // Brown clay under blue light goes dark and muted, which is how it really looks.
               vec3 moonDir = normalize(vec3(0.62, 0.6, 0.5));
-              vec3 skyFill = mix(vec3(0.1, 0.1, 0.24), vec3(0.22, 0.24, 0.47), 0.5 + 0.5 * n.y);
-              vec3 night = albedo * (skyFill * 1.12 + vec3(0.66, 0.6, 0.72) * max(dot(n, moonDir), 0.0));
-              night *= 1.0 - inner * 0.3;
-              night += oil * vec3(0.3, 0.32, 0.42) * pow(max(1.0 - length(vL.xz - vec2(0.05, 0.03)) * 9.0, 0.0), 3.0);
+              vec3 hemi = mix(vec3(0.05, 0.05, 0.11), vec3(0.2, 0.2, 0.32), 0.5 + 0.5 * n.y);
+              float moonLit = clamp((dot(n, moonDir) + 0.22) / 1.22, 0.0, 1.0);
+              // the near wall of the bowl shades the inside from the moon
+              float open = mix(1.0, smoothstep(-0.35, 0.55, dot(vL.xz, -normalize(moonDir.xz)) / 0.18), inner + oil);
+              vec3 night = albedo * (hemi + vec3(0.5, 0.5, 0.62) * moonLit * open) * ao;
+              // the oil is a dark mirror: it shows the sky, and a glint of the moon
+              night += oil * (vec3(0.05, 0.06, 0.12) + vec3(0.55, 0.58, 0.72) * exp(-dot(vL.xz + moonDir.xz * 0.07, vL.xz + moonDir.xz * 0.07) * 420.0));
+              // a faint sheen along the rim
+              night += outer * vec3(0.08, 0.09, 0.14) * smoothstep(0.138, 0.152, vL.y) * moonLit;
 
-              // its own flame: a small light at the wick, falling off quickly
+              // ── By its own flame ──
+              // A small warm light just above the lip. It floods the inside of the bowl and the
+              // rim near the wick, and leaves the outside below the rim in shadow.
               vec3 toWick = vWick - vL;
               float d2 = dot(toWick, toWick);
-              float reach = 1.0 / (1.0 + d2 * 55.0);
+              float falloff = 1.0 / (1.0 + d2 * 40.0);
               float facing = max(dot(n, normalize(toWick)), 0.0);
-              vec3 lit = albedo * vec3(1.25, 0.6, 0.2) * (facing * reach * 4.6 + reach * 0.4);
-              // the flame mirrored in the oil
-              lit += oil * vec3(1.0, 0.72, 0.3) * exp(-dot(vL.xz - vWick.xz * 0.72, vL.xz - vWick.xz * 0.72) * 260.0) * 1.3;
+              vec3 flame = vec3(1.0, 0.5, 0.16);
+              vec3 lit = albedo * flame * facing * falloff * 6.5 * mix(1.0, ao, 0.5);
+              // glow off the water lifts the underside a little, strongest below the wick
+              lit += outer * albedo * vec3(1.0, 0.42, 0.12) * (0.3 + 0.7 * max(-n.y, 0.0)) * falloff * 0.7;
+              // the flame mirrored in the oil, and the oil itself glowing amber near the wick
+              vec2 mirror = vL.xz - vWick.xz * 0.7;
+              lit += oil * (vec3(1.0, 0.74, 0.34) * exp(-dot(mirror, mirror) * 240.0) * 1.5 + vec3(0.9, 0.42, 0.1) * falloff * 0.55);
+              // the wick end glows
+              lit += wick * vec3(1.0, 0.45, 0.12) * 0.9;
 
               gl_FragColor = vec4((night + lit * vLit) * vFade, 1.0);
             }`,

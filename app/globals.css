@@ -543,11 +543,42 @@ h2 {
   top: 50%;
   left: 50%;
   width: min(135vw, 46rem);
-  height: auto;
+  aspect-ratio: 1;
   translate: -50% -50%;
   opacity: 0.34;
-  overflow: visible;
 }
+
+/* Each ring turns in place, neighbours in opposite directions and at different speeds. */
+.mandala-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  will-change: transform;
+  animation: turn 90s linear infinite;
+}
+
+.mandala-ring-2 {
+  animation-duration: 130s;
+  animation-direction: reverse;
+}
+
+.mandala-ring-3 {
+  animation-duration: 170s;
+}
+
+.mandala-ring-4 {
+  animation-duration: 70s;
+  animation-direction: reverse;
+}
+
+@keyframes turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 
 .muhurtham-copy {
   position: relative;
@@ -565,19 +596,20 @@ h2 {
   min-height: 6rem;
   display: flex;
   justify-content: center;
-  gap: clamp(1.25rem, 6vw, 3rem);
+  gap: clamp(0.7rem, 4vw, 2.5rem);
 }
 
 .countdown-cell {
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-width: 2.2ch;
 }
 
 .countdown-num {
   font-family: var(--font-display), serif;
   font-weight: 600;
-  font-size: clamp(3rem, 14vw, 5.5rem);
+  font-size: clamp(2.3rem, 11.5vw, 5rem);
   line-height: 1;
   font-variant-numeric: lining-nums tabular-nums;
   background: var(--gold-metal);
@@ -587,7 +619,7 @@ h2 {
 }
 
 .countdown-label {
-  font-size: 0.95rem;
+  font-size: clamp(0.78rem, 3.3vw, 0.95rem);
   color: rgba(243, 231, 207, 0.8);
 }
 
@@ -664,7 +696,7 @@ h2 {
   color: var(--gold-3);
 }
 
-.field input[type="text"] {
+.field input:not([type="radio"]):not([type="checkbox"]) {
   width: 100%;
   min-height: 3rem;
   padding: 0.4rem 0;
@@ -677,7 +709,7 @@ h2 {
   font-size: 1.2rem;
 }
 
-.field input[type="text"]:focus-visible {
+.field input:not([type="radio"]):not([type="checkbox"]):focus-visible {
   outline: none;
   border-bottom: 2px solid var(--gold-3);
 }
@@ -798,7 +830,21 @@ h2 {
 
 @media (prefers-reduced-motion: reduce) {
   .flame-flicker,
+  .mandala-ring,
   .veil-hint {
     animation: none;
   }
+}
+
+.field input[type="date"] {
+  color-scheme: dark;
+  min-width: 12rem;
+  width: auto;
+}
+
+.field-hint {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.9rem;
+  color: rgba(243, 231, 207, 0.7);
 }

@@ -6,10 +6,20 @@ import type { Wedding } from "@/content/wedding";
 export default function Rsvp({ w, guest }: { w: Wedding; guest: string }) {
   const [typedName, setTypedName] = useState<string | null>(null);
   const name = typedName ?? guest;
+  const [phone, setPhone] = useState("");
+  const [arrival, setArrival] = useState("");
   const [coming, setComing] = useState<"yes" | "no">("yes");
   const [count, setCount] = useState(2);
   const [picked, setPicked] = useState<string[]>(w.events.map((e) => e.name));
   const [error, setError] = useState("");
+
+  // Guests can arrive any time from two weeks before, up to the wedding day itself.
+  const weddingDay = w.muhurtham.slice(0, 10);
+  const earliest = new Date(new Date(`${weddingDay}T00:00:00`).getTime() - 14 * 86400_000).toLocaleDateString("en-CA");
+  const digits = phone.replace(/\D/g, "");
+  const arrivalText = arrival
+    ? new Date(`${arrival}T00:00:00`).toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" })
+    : "";
 
   const toggle = (ev: string) =>
     setPicked((p) => (p.includes(ev) ? p.filter((x) => x !== ev) : [...p, ev]));
@@ -18,6 +28,14 @@ export default function Rsvp({ w, guest }: { w: Wedding; guest: string }) {
     e.preventDefault();
     if (!name.trim()) {
       setError("Enter your name so we know who is coming.");
+      return;
+    }
+    if (digits.length < 7) {
+      setError("Enter a phone number we can reach you on.");
+      return;
+    }
+    if (coming === "yes" && !arrival) {
+      setError("Choose the date you will arrive.");
       return;
     }
     if (coming === "yes" && picked.length === 0) {
@@ -31,11 +49,14 @@ export default function Rsvp({ w, guest }: { w: Wedding; guest: string }) {
             `Namaste! This is ${name.trim()}.`,
             `We will be there for ${w.groom} & ${w.bride}'s wedding.`,
             `Guests: ${count}`,
+            `Arriving: ${arrivalText}`,
             `Joining: ${picked.join(", ")}`,
+            `Phone: ${phone.trim()}`,
           ]
         : [
             `Namaste! This is ${name.trim()}.`,
             `We are sorry we cannot make it to ${w.groom} & ${w.bride}'s wedding. Our blessings are with you both.`,
+            `Phone: ${phone.trim()}`,
           ];
     const url = `https://wa.me/${w.rsvpWhatsApp}?text=${encodeURIComponent(lines.join("\n"))}`;
     window.open(url, "_blank", "noopener");
@@ -51,6 +72,18 @@ export default function Rsvp({ w, guest }: { w: Wedding; guest: string }) {
           onChange={(e) => setTypedName(e.target.value)}
           autoComplete="name"
           aria-invalid={!!error && !name.trim()}
+        />
+      </label>
+
+      <label className="field">
+        <span className="field-label">Your phone number</span>
+        <input
+          type="tel"
+          inputMode="tel"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          autoComplete="tel"
+          aria-invalid={!!error && digits.length < 7}
         />
       </label>
 
@@ -80,6 +113,19 @@ export default function Rsvp({ w, guest }: { w: Wedding; guest: string }) {
               </button>
             </div>
           </div>
+
+          <label className="field">
+            <span className="field-label">The date you arrive</span>
+            <input
+              type="date"
+              value={arrival}
+              min={earliest}
+              max={weddingDay}
+              onChange={(e) => setArrival(e.target.value)}
+              aria-invalid={!!error && !arrival}
+            />
+            <span className="field-hint">So the family can plan your stay and travel.</span>
+          </label>
 
           <fieldset className="field choice">
             <legend className="field-label">Which ceremonies</legend>
